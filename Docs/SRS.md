@@ -140,3 +140,60 @@ Beta shall additionally maintain user credentials and role information.
 MVP: Course catalog, course CRUD, registration APIs, database integration, and local execution.
 
 Beta: Authentication, RBAC, dashboard, add/drop, advanced registration validation, API permissions, and deployment.
+
+
+9. Use Cases
+
+UC-01: View Course Catalog
+- Actor: Student
+- Description: The student views the list of available courses.
+- Main Flow:
+  1. The student opens the course catalog.
+  2. The system retrieves available courses.
+  3. The system displays the course list.
+
+UC-02: Manage Courses
+- Actor: Administrator
+- Description: The administrator manages course information.
+- Main Flow:
+  1. The administrator selects a course management operation.
+  2. The administrator creates, views, updates, or deletes a course.
+  3. The system validates the information.
+  4. The system saves the changes and returns a response.
+
+UC-03: Register for a Course
+- Actor: Student
+- Description: The student registers for a selected course.
+- Main Flow:
+  1. The student selects a course.
+  2. The system checks for duplicate registration.
+  3. The system creates the registration record.
+  4. The system confirms successful registration.
+- Alternative Flow:
+  - If the student is already registered for the course, the system rejects the request.
+
+UC-04: View Registrations
+- Actor: Student / Administrator
+- Description: Users view course registration records.
+- Main Flow:
+  1. The user opens the registration list.
+  2. The system retrieves the registration records.
+  3. The system displays the available records.
+
+UC-05: User Login (Beta)
+- Actor: Student / Administrator
+- Description: Users securely log in to the system.
+- Main Flow:
+  1. The user enters login credentials.
+  2. The system verifies the credentials.
+  3. The system grants access according to the user's role.
+
+UC-06: Drop a Course (Beta)
+- Actor: Student
+- Description: The student drops a previously registered course.
+- Main Flow:
+  1. The student selects a registered course.
+  2. The student requests to drop the course.
+  3. The system processes the request according to registration rules.
+  4. The system updates the registration status.
+

@@ -84,3 +84,50 @@ The initial project does not include payment processing, university ERP integrat
 10. Risks and Limitations
 
 Limited development time may affect the number of completed features. Therefore, MVP features will be prioritized, and advanced security, dashboard, and deployment features will be developed during Beta.
+
+
+11. User Stories
+
+Student:
+- As a student, I want to browse available courses so that I can find courses suitable for my academic needs.
+- As a student, I want to view course details, credits, and prerequisites so that I can make informed registration decisions.
+- As a student, I want to register for courses so that I can enroll in my desired courses.
+- As a student, I want to view and manage my registrations so that I can keep track of my enrolled courses.
+
+Administrator:
+- As an administrator, I want to create new courses so that students can see available courses.
+- As an administrator, I want to view all course records so that I can monitor course information.
+- As an administrator, I want to update course information so that the catalog remains accurate.
+- As an administrator, I want to delete course records so that outdated courses can be removed.
+- As an administrator, I want to monitor student registrations so that I can manage enrollment records.
+
+12. Project Milestones
+
+Milestone 1: Project Planning and Documentation
+- Finalize the project idea and requirements.
+- Prepare the Product Requirements Document (PRD).
+- Prepare the Software Requirements Specification (SRS).
+- Prepare the Technical Design Document (TDD).
+
+Milestone 2: MVP Development (Midterm)
+- Develop the frontend using React and TypeScript.
+- Develop REST APIs using FastAPI.
+- Implement Create, Read, Update, and Delete (CRUD) operations for courses.
+- Implement course registration functionality.
+- Integrate the database with the application.
+- Test and demonstrate the MVP locally.
+
+Milestone 3: Beta Development (Final)
+- Implement user authentication and logout.
+- Add Role-Based Access Control (RBAC).
+- Develop the student dashboard.
+- Implement course registration and drop functionality.
+- Add course prerequisite, seat availability, and credit limit validation.
+- Improve security and API permissions.
+
+Milestone 4: Testing and Final Demonstration
+- Test frontend and backend functionality.
+- Fix identified bugs and errors.
+- Complete application integration.
+- Deploy the application for demonstration.
+- Prepare the final project demonstration.
