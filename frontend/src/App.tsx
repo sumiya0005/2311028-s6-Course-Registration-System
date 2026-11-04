@@ -40,7 +40,7 @@ type Faculty = {
 
 type DashboardData = Record<string, any>
 
-const API = ""
+const API = "https://2311028-s6-course-registration-syst-nine.vercel.app"
 
 async function api<T = any>(path: string, options: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem("unienroll_token")
