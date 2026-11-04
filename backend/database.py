@@ -1,10 +1,15 @@
 
 import sqlite3
 from pathlib import Path
+import os
 
 # Database file location
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_PATH = BASE_DIR / "unienroll.db"
+DATABASE_PATH = (
+    Path("/tmp/unienroll.db")
+    if os.getenv("VERCEL")
+    else BASE_DIR / "unienroll.db"
+)
 
 
 def get_connection():
