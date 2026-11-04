@@ -1,5 +1,6 @@
 
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field
 from typing import Optional
@@ -15,6 +16,15 @@ from auth import (
 
 app = FastAPI(title="UniEnroll Course Registration System")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://2311028-s6.vercel.app"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 create_tables()
 security = HTTPBearer()
 
