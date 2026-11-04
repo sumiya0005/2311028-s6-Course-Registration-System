@@ -206,3 +206,188 @@ def delete_course(course_id: int):
 
     finally:
         connection.close()
+
+        
+# ==========================================
+# STUDENT AND COURSE REGISTRATION APIs
+# ==========================================
+
+# Student input model
+class StudentCreate(BaseModel):
+    student_id: str
+    name: str
+    email: str
+
+
+# Registration input model
+class RegistrationCreate(BaseModel):
+    student_id: int
+    course_id: int
+
+
+# CREATE: Add a new student
+@app.post("/api/students", status_code=201)
+def create_student(student: StudentCreate):
+    connection = get_connection()
+
+    try:
+        cursor = connection.execute(
+            """
+            INSERT INTO students (student_id, name, email)
+            VALUES (?, ?, ?)
+            """,
+            (student.student_id, student.name, student.email)
+        )
+
+        connection.commit()
+
+        return {
+            "message": "Student created successfully",
+            "id": cursor.lastrowid
+        }
+
+    except sqlite3.IntegrityError:
+        raise HTTPException(
+            status_code=409,
+            detail="Student ID or email already exists"
+        )
+
+    finally:
+        connection.close()
+
+
+# READ: Get all students
+@app.get("/api/students")
+def get_students():
+    connection = get_connection()
+
+    try:
+        students = connection.execute(
+            "SELECT * FROM students ORDER BY id"
+        ).fetchall()
+
+        return [dict(student) for student in students]
+
+    finally:
+        connection.close()
+
+
+# CREATE: Register a student in a course
+@app.post("/api/registrations", status_code=201)
+def create_registration(registration: RegistrationCreate):
+    connection = get_connection()
+
+    try:
+        # Check whether student exists
+        student = connection.execute(
+            "SELECT * FROM students WHERE id = ?",
+            (registration.student_id,)
+        ).fetchone()
+
+        if student is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Student not found"
+            )
+
+        # Check whether course exists
+        course = connection.execute(
+            "SELECT * FROM courses WHERE id = ?",
+            (registration.course_id,)
+        ).fetchone()
+
+        if course is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Course not found"
+            )
+
+        # Prevent duplicate registration
+        existing = connection.execute(
+            """
+            SELECT id FROM registrations
+            WHERE student_id = ? AND course_id = ?
+            """,
+            (registration.student_id, registration.course_id)
+        ).fetchone()
+
+        if existing is not None:
+            raise HTTPException(
+                status_code=409,
+                detail="Student is already registered in this course"
+            )
+
+        # Check course capacity
+        registered_count = connection.execute(
+            """
+            SELECT COUNT(*) AS total
+            FROM registrations
+            WHERE course_id = ?
+            """,
+            (registration.course_id,)
+        ).fetchone()["total"]
+
+        if registered_count >= course["capacity"]:
+            raise HTTPException(
+                status_code=409,
+                detail="Course capacity is full"
+            )
+
+        # Save registration
+        cursor = connection.execute(
+            """
+            INSERT INTO registrations (student_id, course_id)
+            VALUES (?, ?)
+            """,
+            (registration.student_id, registration.course_id)
+        )
+
+        connection.commit()
+
+        return {
+            "message": "Course registration successful",
+            "registration_id": cursor.lastrowid
+        }
+
+    except sqlite3.IntegrityError:
+        raise HTTPException(
+            status_code=409,
+            detail="Registration could not be completed"
+        )
+
+    finally:
+        connection.close()
+
+
+# READ: Get all course registrations
+@app.get("/api/registrations")
+def get_registrations():
+    connection = get_connection()
+
+    try:
+        registrations = connection.execute(
+            """
+            SELECT
+                registrations.id,
+                students.id AS student_id,
+                students.student_id AS student_number,
+                students.name AS student_name,
+                courses.id AS course_id,
+                courses.code AS course_code,
+                courses.title AS course_title,
+                registrations.status,
+                registrations.created_at
+            FROM registrations
+            JOIN students
+                ON registrations.student_id = students.id
+            JOIN courses
+                ON registrations.course_id = courses.id
+            ORDER BY registrations.id
+            """
+        ).fetchall()
+
+        return [dict(registration) for registration in registrations]
+
+    finally:
+        connection.close()
+

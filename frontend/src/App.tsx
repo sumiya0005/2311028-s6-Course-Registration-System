@@ -11,6 +11,25 @@ type Course = {
   capacity: number
 }
 
+type Student = {
+  id: number
+  student_id: string
+  name: string
+  email: string
+}
+
+type Registration = {
+  id: number
+  student_id: number
+  student_number: string
+  student_name: string
+  course_id: number
+  course_code: string
+  course_title: string
+  status: string
+  created_at: string
+}
+
 const emptyForm = {
   code: "",
   title: "",
@@ -22,8 +41,23 @@ const emptyForm = {
 
 export default function App() {
   const [courses, setCourses] = useState<Course[]>([])
+  const [students, setStudents] = useState<Student[]>([])
+  const [registrations, setRegistrations] = useState<Registration[]>([])
+
   const [form, setForm] = useState(emptyForm)
   const [editingId, setEditingId] = useState<number | null>(null)
+
+  const [studentForm, setStudentForm] = useState({
+    student_id: "",
+    name: "",
+    email: "",
+  })
+
+  const [registrationForm, setRegistrationForm] = useState({
+    student_id: "",
+    course_id: "",
+  })
+
   const [message, setMessage] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
@@ -42,8 +76,38 @@ export default function App() {
     }
   }
 
+  async function loadStudents() {
+    try {
+      const response = await fetch("/api/students")
+      if (!response.ok) throw new Error("Failed to load students")
+      const data: Student[] = await response.json()
+      setStudents(data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong")
+    }
+  }
+
+  async function loadRegistrations() {
+    try {
+      const response = await fetch("/api/registrations")
+      if (!response.ok) throw new Error("Failed to load registrations")
+      const data: Registration[] = await response.json()
+      setRegistrations(data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong")
+    }
+  }
+
+  async function loadAllData() {
+    await Promise.all([
+      loadCourses(),
+      loadStudents(),
+      loadRegistrations(),
+    ])
+  }
+
   useEffect(() => {
-    loadCourses()
+    loadAllData()
   }, [])
 
   async function handleSubmit(e: FormEvent) {
@@ -121,7 +185,7 @@ export default function App() {
       }
 
       setMessage("Course deleted successfully!")
-      await loadCourses()
+      await loadAllData()
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong")
     }
@@ -134,6 +198,59 @@ export default function App() {
     setMessage("")
   }
 
+  async function handleStudentSubmit(e: FormEvent) {
+    e.preventDefault()
+    setMessage("")
+    setError("")
+
+    try {
+      const response = await fetch("/api/students", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(studentForm),
+      })
+
+      const data = await response.json()
+      if (!response.ok) {
+        throw new Error(data.detail || "Failed to create student")
+      }
+
+      setMessage("Student created successfully!")
+      setStudentForm({ student_id: "", name: "", email: "" })
+      await loadStudents()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong")
+    }
+  }
+
+  async function handleRegistrationSubmit(e: FormEvent) {
+    e.preventDefault()
+    setMessage("")
+    setError("")
+
+    try {
+      const response = await fetch("/api/registrations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          student_id: Number(registrationForm.student_id),
+          course_id: Number(registrationForm.course_id),
+        }),
+      })
+
+      const data = await response.json()
+      if (!response.ok) {
+        throw new Error(data.detail || "Registration failed")
+      }
+
+      setMessage("Course registration successful!")
+      setRegistrationForm({ student_id: "", course_id: "" })
+      await loadRegistrations()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong")
+    }
+  }
+
   return (
     <main className="container">
       <header className="header">
@@ -141,6 +258,10 @@ export default function App() {
         <p>Course Registration System</p>
       </header>
 
+      {message && <p className="success">{message}</p>}
+      {error && <p className="error">{error}</p>}
+
+      {/* COURSE MANAGEMENT */}
       <section className="form-section">
         <h2>{editingId === null ? "Add New Course" : "Update Course"}</h2>
 
@@ -200,15 +321,13 @@ export default function App() {
             </button>
           )}
         </form>
-
-        {message && <p className="success">{message}</p>}
-        {error && <p className="error">{error}</p>}
       </section>
 
+      {/* COURSE LIST */}
       <section className="courses-section">
         <div className="section-heading">
           <h2>Course Catalog</h2>
-          <button onClick={loadCourses}>Refresh</button>
+          <button onClick={loadAllData}>Refresh</button>
         </div>
 
         {loading ? (
@@ -235,6 +354,135 @@ export default function App() {
                   >
                     Delete
                   </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* STUDENT MANAGEMENT */}
+      <section className="form-section">
+        <h2>Student Management</h2>
+
+        <form onSubmit={handleStudentSubmit} className="course-form">
+          <input
+            placeholder="Student ID"
+            value={studentForm.student_id}
+            onChange={(e) =>
+              setStudentForm({ ...studentForm, student_id: e.target.value })
+            }
+            required
+          />
+
+          <input
+            placeholder="Student Name"
+            value={studentForm.name}
+            onChange={(e) =>
+              setStudentForm({ ...studentForm, name: e.target.value })
+            }
+            required
+          />
+
+          <input
+            type="email"
+            placeholder="Student Email"
+            value={studentForm.email}
+            onChange={(e) =>
+              setStudentForm({ ...studentForm, email: e.target.value })
+            }
+            required
+          />
+
+          <button type="submit">Add Student</button>
+        </form>
+
+        <h3>Student List</h3>
+
+        {students.length === 0 ? (
+          <p>No students available.</p>
+        ) : (
+          <div className="course-list">
+            {students.map((student) => (
+              <article className="course-card" key={student.id}>
+                <div>
+                  <h3>{student.name}</h3>
+                  <p>Student ID: {student.student_id}</p>
+                  <p>Email: {student.email}</p>
+                  <p>Database ID: {student.id}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* COURSE REGISTRATION */}
+      <section className="form-section">
+        <h2>Course Registration</h2>
+
+        <form onSubmit={handleRegistrationSubmit} className="course-form">
+          <select
+            value={registrationForm.student_id}
+            onChange={(e) =>
+              setRegistrationForm({
+                ...registrationForm,
+                student_id: e.target.value,
+              })
+            }
+            required
+          >
+            <option value="">Select Student</option>
+            {students.map((student) => (
+              <option key={student.id} value={student.id}>
+                {student.student_id} - {student.name}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={registrationForm.course_id}
+            onChange={(e) =>
+              setRegistrationForm({
+                ...registrationForm,
+                course_id: e.target.value,
+              })
+            }
+            required
+          >
+            <option value="">Select Course</option>
+            {courses.map((course) => (
+              <option key={course.id} value={course.id}>
+                {course.code} - {course.title}
+              </option>
+            ))}
+          </select>
+
+          <button type="submit">Register Student</button>
+        </form>
+      </section>
+
+      {/* REGISTRATION LIST */}
+      <section className="courses-section">
+        <div className="section-heading">
+          <h2>Registration List</h2>
+          <button onClick={loadRegistrations}>Refresh</button>
+        </div>
+
+        {registrations.length === 0 ? (
+          <p>No registrations available.</p>
+        ) : (
+          <div className="course-list">
+            {registrations.map((registration) => (
+              <article className="course-card" key={registration.id}>
+                <div>
+                  <h3>
+                    {registration.course_code} - {registration.course_title}
+                  </h3>
+                  <p>Student: {registration.student_name}</p>
+                  <p>Student ID: {registration.student_number}</p>
+                  <p>Status: {registration.status}</p>
+                  <p>Registration Date: {registration.created_at}</p>
                 </div>
               </article>
             ))}
