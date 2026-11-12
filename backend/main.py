@@ -19,7 +19,9 @@ app = FastAPI(title="UniEnroll Course Registration System")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://2311028-s6.vercel.app"
+    "https://2311028-s6-e3fw6aiz2-hoquesumiya40-8832.vercel.app",
+    "http://localhost:5173"
+],
     ],
     allow_credentials=True,
     allow_methods=["*"],
