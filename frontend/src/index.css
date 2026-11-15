@@ -10,18 +10,136 @@ body {
   color: #1e293b;
 }
 
+button {
+  padding: 11px 18px;
+  border: none;
+  border-radius: 7px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+button:hover {
+  opacity: 0.88;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  font-size: 14px;
+}
+
+input:focus {
+  outline: 2px solid #93c5fd;
+  border-color: #2563eb;
+}
+
+/* Login and Signup */
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
+  background: linear-gradient(135deg, #dbeafe, #ede9fe, #fce7f3);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background: white;
+  padding: 35px;
+  border-radius: 16px;
+  box-shadow: 0 12px 35px rgba(30, 41, 59, 0.12);
+}
+
+.auth-card h1 {
+  text-align: center;
+  color: #173b70;
+  margin: 0;
+  font-size: 34px;
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: #64748b;
+  margin-bottom: 25px;
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.auth-tabs button {
+  width: 100%;
+}
+
+.active-tab {
+  background: #2563eb;
+}
+
+.secondary {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-form h2 {
+  margin: 0 0 8px;
+}
+
+.auth-form label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.auth-form button {
+  margin-top: 10px;
+}
+
+.auth-footer {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 12px;
+  margin-top: 25px;
+}
+
+/* Dashboard */
+
 .container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 30px 20px;
 }
 
 .header {
-  background: #173b70;
+  background: linear-gradient(120deg, #173b70, #2563eb);
   color: white;
-  padding: 30px;
+  padding: 25px 30px;
   border-radius: 12px;
   margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
 }
 
 .header h1 {
@@ -33,6 +151,60 @@ body {
   margin: 0;
   color: #dbeafe;
 }
+
+.user-info {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.role-badge {
+  background: #dbeafe;
+  color: #173b70;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.logout {
+  background: #dc2626;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #eff6ff, #e0e7ff);
+  padding: 22px;
+  border-radius: 12px;
+  border: 1px solid #dbeafe;
+}
+
+.stat-card h3 {
+  font-size: 28px;
+  color: #1d4ed8;
+  margin: 0 0 8px;
+}
+
+.stat-card p {
+  margin: 0;
+  color: #475569;
+}
+
+/* Course sections */
 
 .form-section,
 .courses-section {
@@ -53,47 +225,6 @@ h2 {
   gap: 14px;
 }
 
-input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 7px;
-  font-size: 14px;
-}
-
-button {
-  padding: 11px 18px;
-  border: none;
-  border-radius: 7px;
-  background: #2563eb;
-  color: white;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-button:hover {
-  opacity: 0.88;
-}
-
-.cancel {
-  background: #64748b;
-}
-
-.success {
-  color: #15803d;
-  margin-bottom: 0;
-}
-
-.error {
-  color: #dc2626;
-}
-
-.section-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .course-list {
   display: grid;
   gap: 15px;
@@ -107,6 +238,7 @@ button:hover {
   padding: 18px;
   border: 1px solid #e2e8f0;
   border-radius: 9px;
+  background: #fff;
 }
 
 .course-card h3 {
@@ -121,6 +253,7 @@ button:hover {
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
@@ -128,13 +261,44 @@ button:hover {
   background: #dc2626;
 }
 
+.cancel {
+  background: #64748b;
+}
+
+.success {
+  color: #15803d;
+  margin-bottom: 12px;
+}
+
+.error {
+  color: #dc2626;
+  margin-bottom: 12px;
+}
+
 @media (max-width: 650px) {
+  .auth-card {
+    padding: 25px 20px;
+  }
+
+  .container {
+    padding: 15px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .course-form {
     grid-template-columns: 1fr;
   }
 
   .course-card {
     flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-info {
     align-items: flex-start;
   }
 }
