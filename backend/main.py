@@ -1,4 +1,4 @@
-
+﻿
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -19,14 +19,14 @@ app = FastAPI(title="UniEnroll Course Registration System")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-    "https://2311028-s6-e3fw6aiz2-hoquesumiya40-8832.vercel.app",
-    "http://localhost:5173"
-],
+        "https://2311028-s6-esh98u59c-hoquesumiya40-8832.vercel.app",
+        "http://localhost:5173"
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 create_tables()
 security = HTTPBearer()
 
@@ -1009,3 +1009,5 @@ def admin_dashboard(
 
     finally:
         connection.close()
+
+
